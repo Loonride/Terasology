@@ -114,8 +114,8 @@ public class WorldReflectionNode extends ConditionDependentNode {
         FBO reflectedFbo = requiresFBO(new FBOConfig(REFLECTED_FBO_URI, HALF_SCALE, FBO.Type.DEFAULT).useDepthBuffer(), displayResolutionDependentFBOs);
         addDesiredStateChange(new BindFbo(reflectedFbo));
         addDesiredStateChange(new SetViewportToSizeOf(reflectedFbo));
-        addDesiredStateChange(new EnableFaceCulling());
-        addDesiredStateChange(new SetFacesToCull(GL_FRONT));
+//        addDesiredStateChange(new EnableFaceCulling());
+//        addDesiredStateChange(new SetFacesToCull(GL_FRONT));
         addDesiredStateChange(new EnableMaterial(CHUNK_MATERIAL_URN));
 
         // TODO: improve EnableMaterial to take advantage of shader feature bitmasks.

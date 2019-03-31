@@ -86,9 +86,9 @@ void main() {
 
 // Active for worldReflectionNode only.
 #if defined FEATURE_USE_FORWARD_LIGHTING
-    if (vertexWorldPos.y < clip) {
-        discard;
-    }
+    // if (vertexWorldPos.y < clip) {
+    //     discard;
+    // }
 #endif
 
     vec2 texCoord = gl_TexCoord[0].xy;
@@ -247,34 +247,39 @@ void main() {
         float specularHighlight = WATER_SPEC * calcDayAndNightLightingFactor(daylightValue, daylight) * calcSpecLightNormalized(normalWater, sunVecViewAdjusted, normalizedViewPos, waterSpecExp);
         color.xyz += vec3(specularHighlight, specularHighlight, specularHighlight);
 
-        vec4 reflectionColor = vec4(texture2D(textureWaterReflection, projectedPos + normalWaterOffset.xy * waterRefraction).xyz, 1.0);
-        vec4 refractionColor = vec4(texture2D(texSceneOpaque, projectedPos + normalWaterOffset.xy * waterRefraction).xyz, 1.0);
+        vec4 reflectionColor = vec4(texture2D(textureWaterReflection, projectedPos).xyz, 1.0);
+        // vec4 reflectionColor = vec4(texture2D(textureWaterReflection, projectedPos + normalWaterOffset.xy * waterRefraction).xyz, 1.0);
+        // vec4 refractionColor = vec4(texture2D(texSceneOpaque, projectedPos + normalWaterOffset.xy * waterRefraction).xyz, 1.0);
+        vec4 refractionColor = vec4(texture2D(texSceneOpaque, projectedPos).xyz, 1.0);
 
         vec4 litWaterTint = vec4(WATER_TINT) * vec4(combinedLightValue.x, combinedLightValue.y, combinedLightValue.z, 1.0);
 
         /* FRESNEL */
-        if (!swimming) {
-            float f = fresnel(dot(normalWater, normalizedViewPos), waterFresnelBias, waterFresnelPow);
-            color += mix(refractionColor * (1.0 - waterTint) +  waterTint * litWaterTint,
-                    reflectionColor * (1.0 - waterTint) + waterTint * litWaterTint, f);
-        } else {
-             color += refractionColor * (1.0 - waterTint) +  waterTint * litWaterTint;
-        }
+        // if (!swimming) {
+        //     float f = fresnel(dot(normalWater, normalizedViewPos), waterFresnelBias, waterFresnelPow);
+        //     color += mix(refractionColor * (1.0 - waterTint) +  waterTint * litWaterTint,
+        //             reflectionColor * (1.0 - waterTint) + waterTint * litWaterTint, f);
+        // } else {
+        //      color += refractionColor * (1.0 - waterTint) +  waterTint * litWaterTint;
+        // }
+        color = reflectionColor;
 
         color.a = 1.0;
-    } else if (isWater) {
-        texCoord.x = mod(texCoord.x, TEXTURE_OFFSET) * (1.0 / TEXTURE_OFFSET);
-        texCoord.y = mod(texCoord.y, TEXTURE_OFFSET) / (128.0 / (1.0 / TEXTURE_OFFSET));
-        texCoord.y += mod(timeToTick(time, -0.1), 127.0) * (1.0/128.0);
+    }
+    // else if (isWater) {
+    //     texCoord.x = mod(texCoord.x, TEXTURE_OFFSET) * (1.0 / TEXTURE_OFFSET);
+    //     texCoord.y = mod(texCoord.y, TEXTURE_OFFSET) / (128.0 / (1.0 / TEXTURE_OFFSET));
+    //     texCoord.y += mod(timeToTick(time, -0.1), 127.0) * (1.0/128.0);
 
-        vec4 albedoColor = texture2D(textureWater, texCoord.xy).rgba;
-        albedoColor.rgb *= combinedLightValue;
+    //     vec4 albedoColor = texture2D(textureWater, texCoord.xy).rgba;
+    //     albedoColor.rgb *= combinedLightValue;
 
-        vec3 refractionColor = texture2D(texSceneOpaque, projectedPos + albedoColor.rg * 0.05).rgb;
+    //     vec3 refractionColor = texture2D(texSceneOpaque, projectedPos + albedoColor.rg * 0.05).rgb;
 
-        color.rgb += mix(refractionColor, albedoColor.rgb, albedoColor.a);
-        color.a = 1.0;
-    } else {
+    //     color.rgb += mix(refractionColor, albedoColor.rgb, albedoColor.a);
+    //     color.a = 1.0;
+    // }
+    else {
         vec3 refractionColor = texture2D(texSceneOpaque, projectedPos).rgb;
         vec4 albedoColor = texture2D(textureAtlas, texCoord.xy);
         albedoColor.rgb *= combinedLightValue;
@@ -285,7 +290,7 @@ void main() {
     }
 #elif defined (FEATURE_USE_FORWARD_LIGHTING)
     // Apply the final lighting mix
-    color.xyz *= combinedLightValue * occlusionValue;
+    // color.xyz *= combinedLightValue * occlusionValue;
 #else
     gl_FragData[2].rgba = vec4(blocklightColorBrightness, daylightValue, 0.0, 0.0);
 #endif
