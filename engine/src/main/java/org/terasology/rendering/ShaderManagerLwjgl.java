@@ -102,6 +102,7 @@ public class ShaderManagerLwjgl implements ShaderManager {
         addShaderProgram("toneMapping");
         addShaderProgram("sky");
         addShaderProgram("chunk");
+        addShaderProgram("new_chunk");
         addShaderProgram("particle");
         addShaderProgram("shadowMap");
         addShaderProgram("lightBufferPass");
